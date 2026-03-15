@@ -7,14 +7,11 @@
 
 int main(int argc, char const *argv[]){
     std::string befehl = argv[1];
-    std::vector<std::string> valide = {"add","list","done"};
-    bool invalide = (valide.end()==(std::find(valide.begin(),valide.end(),befehl)));
+    states state = state_to_enum(befehl);
     std::vector<todo> todos = list_todo();
-    if (invalide){
-        std::cout << "CLI-argument ist invalide.";
-    }
-    else{
-        if (befehl=="add"){
+    switch(state){
+        case ADD:
+        {
             if (argc != 5)
             {
                 std::cout << "Ungueltige anzahl an CLI";
@@ -37,8 +34,10 @@ int main(int argc, char const *argv[]){
                 }else{
                     std::cout << "Titel ist bereits vergeben.";
                 }
-            }}
-        else if (befehl=="list"){
+            }
+            break;
+        }
+        case LIST:
             if (argc != 2 && argc != 4)
             {
                 std::cout << "Ungueltige anzahl an CLI";
@@ -54,7 +53,7 @@ int main(int argc, char const *argv[]){
                 else if (argc == 4){
                     std::string c = argv[2];
                     if (c!="--sort"){
-                        std::cout << "list parameter ist invalide.";
+                        std::cout << "list parameter ist invalide." << '\n';
                     }
                     std::string sort_by = argv[3];
                     liste = sort_todo(liste,sort_by);
@@ -67,14 +66,18 @@ int main(int argc, char const *argv[]){
                     std::cout << "Invalider input.";
                     return 1;
                 }}
-            }
-
-        else if (befehl=="done"){
+            break;
+        case DONE:
             if (argc != 3){
                 std::cout << "Ungueltige anzahl an CLI";
             }else{
                 unsigned loeschen = std::stoul(argv[2]);
-                del_todo(loeschen);
+                del_todo(todos,loeschen);
                 }
-        }
-}}
+            break;
+
+        case UNKNOWN_state:
+            std::cout << "CLI-STATE-Argument ist invalide.";
+            break;
+            }
+};
