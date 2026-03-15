@@ -3,11 +3,21 @@
 #include <string>
 #include <vector>
 enum states{
-ADD,LIST,DONE,UNKNOWN_state
+ADD,LIST,EDIT,DONE,UNKNOWN_state
 };
 enum sort_states{
     TITEL,DEADLINE,PRIO,UNKNOWN_sort
 };
+enum prio{
+    HOCH,MITTEL,NIEDRIG, UNKNOWN_prio
+};
+
+namespace farbe {
+    const std::string red     = "\033[31m";
+    const std::string green   = "\033[32m";
+    const std::string yellow  = "\033[33m";
+    const std::string reset   = "\033[0m";
+}
 
 struct todo{
     std::string titel;
@@ -16,10 +26,13 @@ struct todo{
     std::string deadline;
 };
 
-void add_todo(std::vector<todo> todo_);
+void save_todo(const std::vector<todo>& todo_);
 std::vector<todo> list_todo();
-std::vector<todo> sort_todo(std::vector<todo> liste,std::string g);
-void del_todo(std::vector<todo> liste,unsigned loeschen);
-states state_to_enum(std::string n);
+std::vector<todo> sort_todo(std::vector<todo>& liste,const std::string& g);
+std::vector<todo> del_todo(std::vector<todo>& liste,const unsigned& loeschen);
+states state_to_enum(const std::string& n);
+void print_list(const std::vector<todo>& todos);
+prio prio_to_enum(const int& var);
+std::vector<todo> replace_todo(std::vector<todo>& todos,const todo& todo_,const unsigned& i);
 
 #endif

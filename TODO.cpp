@@ -6,7 +6,7 @@
 #include <algorithm>
 
 
-void add_todo(std::vector<todo> todo_){
+void save_todo(const std::vector<todo>& todo_){
     std::ofstream outfile("TODO.csv");
     for (unsigned i = 0;i<todo_.size();i++){
         outfile << todo_[i].titel << ";" << todo_[i].prioritaet << ";" << todo_[i].deadline << '\n';
@@ -36,14 +36,14 @@ std::vector<todo> list_todo(){
     return out;
 }
 
-sort_states sort_to_enum(std::string n){
+sort_states sort_to_enum(const std::string& n){
     if (n=="titel") return TITEL;
     if (n=="prio") return PRIO;
     if (n=="deadline" or n=="dl") return DEADLINE;
     return UNKNOWN_sort;
 }
 
-std::vector<todo> sort_todo(std::vector<todo> liste,std::string g){
+std::vector<todo> sort_todo(std::vector<todo>& liste,const std::string& g){
     sort_states state = sort_to_enum(g);
     switch(state){
         case PRIO:
@@ -68,20 +68,49 @@ std::vector<todo> sort_todo(std::vector<todo> liste,std::string g){
     return liste;
 }
 
-void del_todo(std::vector<todo> liste,unsigned loeschen){
+std::vector<todo> del_todo(std::vector<todo>& liste,const unsigned& loeschen){
     if (liste.size()<=loeschen){
-        std::cout << "Ungültige ID.";
-        return;
+        std::cout << "Ungueltige ID."<<'\n';
+        return liste;
     }
-    std::string titel = liste[loeschen].titel;
     liste.erase(liste.begin()+loeschen);
-    std::cout << titel << " erfolgreich abgeschlossen.";
-    add_todo(liste);
+    return liste;
 }
 
-states state_to_enum(std::string n){
+states state_to_enum(const std::string& n){
     if  (n == "add") return ADD;
     if (n=="list") return LIST;
+    if (n=="edit") return EDIT;
     if (n=="done") return DONE;
     return UNKNOWN_state;
 }
+
+prio prio_to_enum(const int& var){
+    if (var==3) return HOCH;
+    if (var==2) return MITTEL;
+    if (var==1) return NIEDRIG;
+    return UNKNOWN_prio;
+}
+
+void print_list(const std::vector<todo>& todos){
+    unsigned i = 0;
+    while (i<todos.size()){
+        prio g = prio_to_enum(todos[i].prioritaet);
+        std::string farbe_code;
+        switch(g) {
+            case HOCH:    farbe_code = farbe::red; break;
+            case MITTEL:  farbe_code = farbe::yellow; break;
+            case NIEDRIG: farbe_code = farbe::green; break;
+            default:      farbe_code = ""; break;
+        }
+        std::cout << farbe_code << todos[i].titel << ";" << todos[i].prioritaet << ";" << todos[i].deadline << ";" << i << farbe::reset << '\n';
+        i++;
+    }
+}
+
+std::vector<todo> replace_todo(std::vector<todo>& todos,const todo& todo_,const unsigned& i){
+    todos = del_todo(todos, i);
+    todos.insert(todos.begin()+i,todo_);
+    return todos;
+}
+
