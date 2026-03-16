@@ -43,7 +43,7 @@ sort_states sort_to_enum(const std::string& n){
     return UNKNOWN_sort;
 }
 
-std::vector<todo> sort_todo(std::vector<todo>& liste,const std::string& g){
+void sort_todo(std::vector<todo>& liste,const std::string& g){
     sort_states state = sort_to_enum(g);
     switch(state){
         case PRIO:
@@ -65,16 +65,14 @@ std::vector<todo> sort_todo(std::vector<todo>& liste,const std::string& g){
             std::cout << "Invalides Sortformat.";
             break;
     }
-    return liste;
 }
 
-std::vector<todo> del_todo(std::vector<todo>& liste,const unsigned& loeschen){
+void del_todo(std::vector<todo>& liste,const unsigned& loeschen){
     if (liste.size()<=loeschen){
         std::cout << "Ungueltige ID."<<'\n';
-        return liste;
+        return;
     }
     liste.erase(liste.begin()+loeschen);
-    return liste;
 }
 
 states state_to_enum(const std::string& n){
@@ -108,9 +106,19 @@ void print_list(const std::vector<todo>& todos){
     }
 }
 
-std::vector<todo> replace_todo(std::vector<todo>& todos,const todo& todo_,const unsigned& i){
-    todos = del_todo(todos, i);
+void replace_todo(std::vector<todo>& todos,const todo& todo_,const unsigned& i){
+    del_todo(todos, i);
     todos.insert(todos.begin()+i,todo_);
-    return todos;
 }
 
+bool titel_exists(const std::vector<todo>& todos, const todo& todo_){
+    unsigned i = 0;
+    while (todo_.titel != todos[i].titel){
+        i++;
+        if (i>=todos.size()){
+        break;
+        }
+    }
+    if (i>=todos.size()){return false;}
+    return true;
+}

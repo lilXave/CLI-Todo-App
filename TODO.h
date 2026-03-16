@@ -28,11 +28,11 @@ struct todo{
 
 void save_todo(const std::vector<todo>& todo_);
 std::vector<todo> list_todo();
-std::vector<todo> sort_todo(std::vector<todo>& liste,const std::string& g);
-std::vector<todo> del_todo(std::vector<todo>& liste,const unsigned& loeschen);
+void sort_todo(std::vector<todo>& liste,const std::string& g);
+void del_todo(std::vector<todo>& liste,const unsigned& loeschen);
 states state_to_enum(const std::string& n);
 void print_list(const std::vector<todo>& todos);
 prio prio_to_enum(const int& var);
-std::vector<todo> replace_todo(std::vector<todo>& todos,const todo& todo_,const unsigned& i);
-
+void replace_todo(std::vector<todo>& todos,const todo& todo_,const unsigned& i);
+bool titel_exists(const std::vector<todo>& todos, const todo& todo_);
 #endif

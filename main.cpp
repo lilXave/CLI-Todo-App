@@ -24,14 +24,8 @@ int main(int argc, char const *argv[]){
                 todo_.titel = argv[2];
                 todo_.prioritaet = std::stoi(argv[3]);
                 todo_.deadline = argv[4];
-                unsigned i = 0;
-                while (todo_.titel != todos[i].titel){
-                    i++;
-                    if (i>=todos.size()){
-                        break;
-                    }
-                }
-                if (i>=todos.size()){
+                bool b = titel_exists(todos,todo_);
+                if (!b){
                     todos.push_back(todo_);
                     save_todo(todos);
                     std::cout << todo_.titel << " Zu TODO's hinzugefuegt."<< '\n';
@@ -41,6 +35,7 @@ int main(int argc, char const *argv[]){
             }
             break;
         }
+
         case LIST:
             if (argc != 2 && argc != 4)
             {
@@ -56,7 +51,7 @@ int main(int argc, char const *argv[]){
                         std::cout << "list parameter ist invalide." << '\n';
                     }
                     std::string sort_by = argv[3];
-                    todos = sort_todo(todos,sort_by);
+                    sort_todo(todos,sort_by);
                     print_list(todos);
                     save_todo(todos);
                 }
@@ -65,24 +60,18 @@ int main(int argc, char const *argv[]){
                     return 1;
                 }}
             break;
+
         case EDIT:
-                {unsigned edit = std::stoul(argv[2]);
+                {
+                if (argc != 6) {std::cout << "Falsche Anzahl an CLI fuer EDIT!";return 1;};
+                unsigned edit = std::stoul(argv[2]);
                 todo todo_;
                 todo_.titel = argv[3];
                 todo_.prioritaet = std::stoi(argv[4]);
                 todo_.deadline = argv[5];
-                unsigned i = 0;
-                while (todo_.titel != todos[i].titel){
-                    i++;
-                    if (todo_.titel == todos[edit].titel){
-                        continue;
-                    }
-                    if (i>=todos.size()){
-                        break;
-                    }
-                }
-                if (i>=todos.size()){
-                    todos = replace_todo(todos,todo_, edit);
+                bool b = titel_exists(todos,todo_);
+                if (todo_.titel == todos[edit].titel || !b){
+                    replace_todo(todos,todo_, edit);
                     save_todo(todos);
                     std::cout << todo_.titel << " erfolgreich geaendert." << '\n';
                 }else{
@@ -98,7 +87,7 @@ int main(int argc, char const *argv[]){
             else{
                 unsigned loeschen = std::stoul(argv[2]);
                 std::string titel = todos[loeschen].titel;
-                todos = del_todo(todos,loeschen);
+                del_todo(todos,loeschen);
                 save_todo(todos);
                 if (loeschen >= todos.size() || todos[loeschen].titel != titel){
                     std::cout << titel << " erfolgreich abgeschlossen."<< '\n';
@@ -108,6 +97,7 @@ int main(int argc, char const *argv[]){
                 }
                 }
             break;
+
         case UNKNOWN_state:
             std::cout << "CLI-STATE-Argument ist invalide."<< '\n';
             break;
